@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinopoisk</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/main.min.css">
+</head>
+
+<body>
+    <main class="main">
+        <form class="search__form mt-3 mb-2">
+            <div class="container">
+                <div class="form__inner row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4">
+                    <div class="col-12 mb-2 col-lg-4 col-xxl-3">
+                        <input type="text" class="search__input form-control " id="search_title" placeholder="Title...">
+                    </div>
+                    <div class="col-12 mb-2 col-lg-4">
+                        <input type="number" class="search__input form-control" id="search_year" placeholder="Year...">
+                    </div>
+                    <div class="col-12 mb-2 col-lg-4">
+                        <select id="search_type" class="search__input form-select h-100">
+                            <option value="all">All</option>
+                            <option value="movie">Movie</option>
+                            <option value="series">Series</option>
+                            <option value="episode">Episode</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-2 col-lg-12">
+                        <input class="btn btn-primary w-100 h-100" type="submit" value="Find">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="search__results mb-3">
+            <div class="container">
+                <div class="results__inner row row-cols-1 row-cols-lg-2">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="ad__films">
+            <div class="container">
+                <div class="ad__inner">
+                    <div id="adCarousel" class="ad__carousel carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#adCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <template class="ad-carousel-item-template">
+        <div class="carousel-item" data-bs-interval="2000">
+            <img src="https://via.placeholder.com/1920x1080" class="ad__img d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 class="ad__title"></h5>
+                <p class="ad__overview"></p>
+            </div>
+        </div>
+    </template>
+
+    <template class="found-item-card-template">
+        <div class="search__item col-12">
+            <div class="card mb-3">
+                <div class="row g-0 row-cols-sm-2">
+                    <div class="col-12 col-sm-4 d-flex flex-column align-items-center">
+                        <img class="search__img img-fluid rounded" alt="test">
+                    </div>
+                    <div class="col-12 col-sm-8">
+                        <div class="card-body">
+                            <h5 class="search__title card-title"></h5>
+                            <p class="search__overview card-text"></p>
+                            <p class="search__score card-text text-muted text-warning"></p>
+                            <p class="search__type card-text text-muted"></p>
+                            <p class="search__genres card-text text-muted"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template class="loading-item-template">
+        <div class="search__item col-12">
+            <div class="card mb-3" aria-hidden="true">
+                <div class="row g-0 row-cols-sm-2">
+                    <div class="col-12 col-sm-4 d-flex flex-column align-items-center">
+                        <img class="search__img img-fluid rounded" src="https://via.placeholder.com/300" alt="test">
+                    </div>
+                    <div class="col-12 col-sm-8">
+                        <div class="card-body">
+                            <h5 class="search__title card-title placeholder-glow">
+                                <span class="placeholder col-6"></span>
+                            </h5>
+                            <p class="card-text placeholder-glow">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                                <span class="placeholder col-8"></span>
+                              </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="./js/utils.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/films.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
