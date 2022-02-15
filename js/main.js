@@ -4,9 +4,9 @@ const adItemTemplate = findElement('.ad-carousel-item-template').content;
 const placeholderTemplate = findElement('.loading-item-template').content;
 const foundTemplate = findElement('.found-item-card-template').content;
 const form = findElement('.search__form');
-const titleValue = findElement('#search_title', form).value;
-const yearValue = findElement('#search_year', form).value;
-const typeValue = findElement('#search_type', form).value;
+const titleValue = findElement('#search_title').value;
+const yearValue = findElement('#search_year').value;
+const typeValue = findElement('#search_type').value;
 const filmsList = findElement('.results__inner');
 
 const renderAdCarousel = (db) => {
@@ -115,22 +115,26 @@ const handleSubmit = (evt) => {
     const title = titleValue.trim();
     const year = yearValue.trim();
 
-    if (title == '' && year == null && typeValue == 'all') {
-        alert('No data is written!')
-        return;
-    } 
     if (title == null) {
-        alert('The title must be written!!!');
-        return;
-    } 
-    if (year == null && typeValue == 'all') {
-        getData('&s='+title);
-    } 
-    if (year == null) {
-        getData('&s='+title+'&type='+typeValue);
-    }
-    if (typeValue == 'all') {
-        getData('&s='+title+'&y='+year);
+        alert('Title must be written');
+    } else {
+        if (year != '' && !isNaN(year)) {
+            const query = '&s='+title+'&y='+year;
+            console.log(qurey);
+            getData(query);
+        } else if (typeValue != 'all') {
+            const query = '&s='+title+'&type='+typeValue;
+            console.log(query);
+            getData(query);
+        } else if (year != '' && !isNaN(year) && typeValue != 'all') {
+            const query = '&s='+title+'&type='+typeValue+'&y='+year;
+            console.log(query);
+            getData(query);
+        } else {
+            const query = '&s='+title;
+            console.log(query);
+            getData(query);
+        }
     }
 }
 
