@@ -48,10 +48,10 @@ const renderFilms = (db) => {
         findElement('.search__img', filmCard).src = elem.Poster;
         findElement('.search__img', filmCard).alt = elem.Title + '\'s poster';
         findElement('.search__title', filmCard).textContent = elem.Title;
-        findElement('.search__overview', filmCard).textContent = 'Overview: ' + getFilmData(elem.id)[2];
-        findElement('.search__score', filmCard).textContent = 'Rating(imdb): ' + getFilmData(elem.id)[1];
+        findElement('.search__overview', filmCard).textContent = 'Overview: ' + getFilmData(elem.imdbID)[2];
+        findElement('.search__score', filmCard).textContent = 'Rating(imdb): ' + getFilmData(elem.imdbID)[1];
         findElement('.search__type', filmCard).textContent = 'Type: ' + elem.Type.toUpperCase();
-        findElement('.search__genres', filmCard).textContent = 'Genres: ' + getFilmData(elem.id)[0];
+        findElement('.search__genres', filmCard).textContent = 'Genres: ' + getFilmData(elem.imdbID)[0];
 
         filmsFragment.appendChild(filmCard);
     });
@@ -60,7 +60,6 @@ const renderFilms = (db) => {
 }
 
 async function getFilmData(id) {
-    loadingAnimation();
     const response = await fetch(API+API_KEY+'&i='+id);
 
     const data = await response.json();
