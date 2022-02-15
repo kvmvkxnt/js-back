@@ -45,7 +45,12 @@ const renderFilms = (db) => {
     db.forEach((elem) => {
         const filmCard = foundTemplate.cloneNode(true);
 
-        findElement('.search__img', filmCard).src = elem.Poster;
+        if (elem.Poster == 'N/A') {
+            findElement('.search__img', filmCard).src = './images/no-images.jpeg';
+        } else {
+            findElement('.search__img', filmCard).src = elem.Poster;
+        }
+
         findElement('.search__img', filmCard).alt = elem.Title + '\'s poster';
         findElement('.search__title', filmCard).textContent = elem.Title;
         findElement('.search__overview', filmCard).textContent = 'Overview: ' + getFilmData(elem.imdbID)[2];
