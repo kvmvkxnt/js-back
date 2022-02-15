@@ -4,9 +4,9 @@ const adItemTemplate = findElement('.ad-carousel-item-template').content;
 const placeholderTemplate = findElement('.loading-item-template').content;
 const foundTemplate = findElement('.found-item-card-template').content;
 const form = findElement('.search__form');
-const titleValue = findElement('#search_title').value;
-const yearValue = findElement('#search_year').value;
-const typeValue = findElement('#search_type').value;
+const titleValue = findElement('#search_title');
+const yearValue = findElement('#search_year');
+const typeValue = findElement('#search_type');
 const filmsList = findElement('.results__inner');
 
 const renderAdCarousel = (db) => {
@@ -112,28 +112,22 @@ async function getData(searchQuery = '&s=Spider-Man') {
 
 const handleSubmit = (evt) => {
     evt.preventDefault();
-    const title = titleValue.trim();
-    const year = yearValue.trim();
+    const title = titleValue.value.trim();
+    const year = yearValue.value.trim();
+    const type = typeValue.value;
 
     if (title == null) {
         alert('Title must be written');
     } else {
-        if (year != '' && !isNaN(year)) {
-            const query = '&s='+title+'&y='+year;
-            console.log(qurey);
-            getData(query);
-        } else if (typeValue != 'all') {
-            const query = '&s='+title+'&type='+typeValue;
-            console.log(query);
-            getData(query);
-        } else if (year != '' && !isNaN(year) && typeValue != 'all') {
-            const query = '&s='+title+'&type='+typeValue+'&y='+year;
-            console.log(query);
-            getData(query);
-        } else {
-            const query = '&s='+title;
-            console.log(query);
-            getData(query);
+        if (year != null && !isNaN(year) && type == 'all') {
+            getData('&s='+title+'&y='+year);
+        } else if (type != 'all' && year == null) {
+            getData('&s='+title+'&type='+type);
+        } else if (isNaN(year)) {
+            alert('Not a number! :)');
+            return;
+        } else if (type != 'all' && year != null && !isNaN(year)) {
+            getData('&s='+title+'&y='+year+'&type='+type);
         }
     }
 }
