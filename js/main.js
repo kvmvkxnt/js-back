@@ -54,9 +54,14 @@ const renderFilms = (db) => {
             findElement('.search__img', filmCard).src = elem.Poster;
         }
 
+        findElement('.card', filmCard).parentNode.dataset.imdbId = elem.imdbId;
         findElement('.search__img', filmCard).alt = elem.Title + '\'s poster';
         findElement('.search__title', filmCard).textContent = elem.Title;
         findElement('.search__type', filmCard).textContent = 'Type: ' + elem.Type.toUpperCase();
+        findElement('.info__button', filmCard).dataset.imdbId = elem.imdbID;
+        findElement('.card-info', filmCard).dataset.imdbId = elem.imdbID;
+
+        console.log(elem.imdbId);
 
         filmsFragment.appendChild(filmCard);
     });
@@ -65,16 +70,22 @@ const renderFilms = (db) => {
     renderButtons(db);
 }
 
-async function getFilmData(id) {
+async function getFilmData(id, node) {
+    node.innerHTML = null;
+    loadingInfo(node);
+    node.dataset.used = 'true';
     const response = await fetch(API+API_KEY+'&i='+id);
 
     const data = await response.json();
+    console.log(data);
 
     if (data.Response == 'True') {
         const genres = data.Genre;
         const score = data.imdbRating;
         const overview = data.Plot;
-        return [genres, score, overview];
+        const info = [genres, score, overview];
+
+        renderInfo(info, node);
     } else {
         alert('Some errors occured! :(')
         return;
@@ -92,6 +103,11 @@ const loadingAnimation = () => {
     }
 
     filmsList.appendChild(loadingFragment);
+}
+
+const loadingInfo = (node) => {
+    const loading = findElement('.info-loading-template').content.cloneNode(true);
+    node.appendChild(loading);
 }
 
 async function getData(searchQuery = '&s=Spider-Man', page) {
@@ -143,7 +159,7 @@ async function getData(searchQuery = '&s=Spider-Man', page) {
             }
         }
 
-    } else if (data.Error == "Too many results") {
+    } else if (data.Error == "Too many results.") {
         filmsList.innerHTML = null;
         buttons.innerHTML = null;
         filmsList.innerHTML = 'Too many results. Please add more info';
@@ -235,7 +251,62 @@ const handleClick = (evt) => {
     }
 }
 
+const renderInfo = (info, node) => {
+    node.innerHTML = null;
+
+    const overview = document.createElement('p');
+    overview.className = 'card-text';
+    
+    if (info[2] == 'N/A') {
+        overview.textContent = 'Overview: not available yet.' 
+    } else {
+        overview.textContent = 'Overview: ' + info[2]; 
+    }
+
+    const rating = document.createElement('p');
+    rating.className = 'card-text h5';
+
+    if (info[1] == 'N/A') {
+        rating.textContent = 'Rating: not available yet.';
+    } else {
+        rating.textContent = 'Rating: ' + info[1];
+    }
+
+    const genres = document.createElement('p');
+    genres.className = 'card-text h4';
+
+    if (info[0] == 'N/A') {
+        genres.textContent = 'Genres: not available yet.';
+    } else {
+        genres.textContent = 'Genres: ' + info[0];
+    }
+
+    const fragment = document.createDocumentFragment();
+    fragment.appendChild(overview);
+    fragment.appendChild(rating);
+    fragment.appendChild(genres);
+
+    node.appendChild(fragment);
+}
+
+const handleInfo = evt => {
+    const clicked = evt.target;
+    if (clicked.matches('.info__button')) {
+        const filmId = clicked.dataset.imdbId;
+        const filmInfo = clicked.nextElementSibling;
+        // getFilmData(filmId, filmInfo);
+
+        if (filmInfo.dataset.used != 'true') {
+            getFilmData(filmId, filmInfo);
+        } else if (filmInfo.dataset.used == 'true') {
+            filmInfo.innerHTML = null;
+            filmInfo.removeAttribute('data-used');
+        }
+    }
+}
+
 renderAdCarousel(films);
 
 form.addEventListener('submit', handleSubmit);
 buttons.addEventListener('click', handleClick);
+filmsList.addEventListener('click', handleInfo);

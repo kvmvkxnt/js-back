@@ -12,7 +12,7 @@
 
 <body>
     <main class="main">
-        <form class="search__form mt-3 mb-2">
+        <form class="search__form mt-3 mb-5">
             <div class="container">
                 <div class="form__inner row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4">
                     <div class="col-12 mb-2 col-lg-4 col-xxl-3">
@@ -72,6 +72,9 @@
         </div>
     </main>
 
+
+    <!-- Templates-->
+
     <template class="ad-carousel-item-template">
         <div class="carousel-item" data-bs-interval="2000">
             <img src="https://via.placeholder.com/1920x1080" class="ad__img d-block w-100" alt="...">
@@ -86,13 +89,17 @@
         <div class="search__item col-12 mb-3">
             <div class="card">
                 <div class="row g-0 row-cols-sm-2">
-                    <div class="col-12 col-sm-4 d-flex flex-column align-items-center">
+                    <div class="col-12 col-sm-4 d-flex flex-column align-items-center justify-content-center">
                         <img class="search__img img-fluid rounded" alt="test">
                     </div>
                     <div class="col-12 col-sm-8">
                         <div class="card-body">
                             <h5 class="search__title card-title"></h5>
                             <p class="search__type card-text text-muted"></p>
+                            <button class="info__button btn btn-outline-info mb-2">More info</button>
+                            <div class="card-info">
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -124,6 +131,16 @@
                 </div>
             </div>
         </div>
+    </template>
+
+    <template class="info-loading-template">
+        <p class="placeholder-glow">
+            <span class="placeholder col-7"></span>
+            <span class="placeholder col-4"></span>
+            <span class="placeholder col-4"></span>
+            <span class="placeholder col-6"></span>
+            <span class="placeholder col-8"></span>
+        </p>
     </template>
 
     <script src="./js/utils.js"></script>
