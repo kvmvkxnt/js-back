@@ -8,6 +8,9 @@ const titleValue = findElement('#search_title');
 const yearValue = findElement('#search_year');
 const typeValue = findElement('#search_type');
 const filmsList = findElement('.results__inner');
+const buttons = findElement('.search__buttons');
+let lastSearchQuery;
+let page = 1;
 
 const renderAdCarousel = (db) => {
     const randomNumber = (Math.random(10)*100).toFixed();
@@ -53,15 +56,13 @@ const renderFilms = (db) => {
 
         findElement('.search__img', filmCard).alt = elem.Title + '\'s poster';
         findElement('.search__title', filmCard).textContent = elem.Title;
-        findElement('.search__overview', filmCard).textContent = 'Overview: ' + getFilmData(elem.imdbID)[2];
-        findElement('.search__score', filmCard).textContent = 'Rating(imdb): ' + getFilmData(elem.imdbID)[1];
         findElement('.search__type', filmCard).textContent = 'Type: ' + elem.Type.toUpperCase();
-        findElement('.search__genres', filmCard).textContent = 'Genres: ' + getFilmData(elem.imdbID)[0];
 
         filmsFragment.appendChild(filmCard);
     });
 
     filmsList.appendChild(filmsFragment);
+    renderButtons(db);
 }
 
 async function getFilmData(id) {
@@ -93,24 +94,99 @@ const loadingAnimation = () => {
     filmsList.appendChild(loadingFragment);
 }
 
-async function getData(searchQuery = '&s=Spider-Man') {
+async function getData(searchQuery = '&s=Spider-Man', page) {
     loadingAnimation();
 
-    const response = await fetch(API+API_KEY+searchQuery);
+    lastSearchQuery = searchQuery;
+    let response;
+    let data;
 
-    const data = await response.json();
-    console.log(searchQuery);
-    console.log(data.Response);
+    if (page <= 1) {
+        response = await fetch(API+API_KEY+searchQuery);
+        data = await response.json();
+    } else {
+        response = await fetch(API+API_KEY+searchQuery+'&page='+page);
+        data = await response.json();
+    }
+
     console.log(data);
 
     if (data.Response == 'True') {
         renderFilms(data.Search);
+        console.log(page);
+        renderButtons(data.totalResults, page);
+        if (page <= 1) {
+            if (!findElement('#prev_btn')) {
+                return;
+            } else {
+                findElement('#prev_btn').disabled = true;
+            }
+        } else {
+            if (!findElement('#prev_btn')) {
+                return;
+            } else {
+                findElement('#prev_btn').disabled = true;
+            }
+        }
+
+        if (page >= Math.ceil(data.totalResults / 10)) {
+            if (!findElement('#next_btn')) {
+                return;
+            } else {
+                findElement('#next_btn').disabled = true;
+            }
+        } else {
+            if (!findElement('#next_btn')) {
+                return;
+            } else {
+                findElement('#next_btn').disabled = false;
+            }
+        }
+
     } else if (data.Error == "Too many results") {
         filmsList.innerHTML = null;
+        buttons.innerHTML = null;
         filmsList.innerHTML = 'Too many results. Please add more info';
+    } else if (data.Error == "Series not found!" || data.Error == "Movie not found!") {
+        filmsList.innerHTML = null;
+        buttons.innerHTML = null;
+        filmsList.innerHTML = '<h2>No such films. Try to find another one! ;)</h2>'
     } else {
         filmsList.innerHTML = null;
+        buttons.innerHTML = null;
         alert('Looks like there\'s a server error :(');
+    }
+}
+
+const renderButtons = (totalResults, currentPage) => {
+    buttons.innerHTML = null;
+    const totalPage = Math.ceil(totalResults / 10); 
+    
+    if (totalPage > 1) {
+        const buttonsFragment = document.createDocumentFragment();
+        const newPrevBtn = document.createElement('button');
+        newPrevBtn.className = 'btn btn-outline-primary';
+        newPrevBtn.id = 'prev_btn';
+        newPrevBtn.textContent = 'Prev';
+        buttonsFragment.appendChild(newPrevBtn);
+    
+        for (let i = 0; i < totalPage; i++) {
+            const newBtn = document.createElement('button');
+            newBtn.className = 'btn btn-outline-primary pageBtn';
+            newBtn.id = 'pg'+(i+1);
+            newBtn.textContent = i+1;
+            buttonsFragment.appendChild(newBtn);
+        }
+
+        findElement('#pg'+currentPage, buttonsFragment).classList.add('active');
+    
+        const newNextBtn = document.createElement('button');
+        newNextBtn.className = 'btn btn-outline-primary';
+        newNextBtn.id = 'next_btn';
+        newNextBtn.textContent = 'Next';
+        buttonsFragment.appendChild(newNextBtn);
+
+        buttons.appendChild(buttonsFragment);
     }
 }
 
@@ -120,22 +196,46 @@ const handleSubmit = (evt) => {
     const year = yearValue.value.trim();
     const type = typeValue.value;
 
-    if (title == null) {
+    if (title == '') {
         alert('Title must be written');
     } else {
-        if (year != null && !isNaN(year) && type == 'all') {
-            getData('&s='+title+'&y='+year);
-        } else if (type != 'all' && year == null) {
-            getData('&s='+title+'&type='+type);
-        } else if (isNaN(year)) {
-            alert('Not a number! :)');
-            return;
-        } else if (type != 'all' && year != null && !isNaN(year)) {
-            getData('&s='+title+'&y='+year+'&type='+type);
+        let yearQuery = '&y='+year;
+        let typeQuery = '&type='+type;
+        let titleQuery = '&s='+title;
+        let query = titleQuery;
+        page = 1;
+
+        if (year != '' && !isNaN(year)) {
+            query += yearQuery;
         }
+
+        if (type != 'all') {
+            query += typeQuery;
+        }
+
+        getData(query, page);
+    }
+}
+
+const handleClick = (evt) => {
+    const clicked = evt.target;
+    if (clicked.matches('#prev_btn')) {
+        page--;
+        getData(lastSearchQuery, page);
+    } else if (clicked.matches('#next_btn')) {
+        page++;
+        getData(lastSearchQuery, page);
+    } else if (clicked.matches('.pageBtn')) {
+        const clickedId = clicked.id;
+        const clickedPageArray = clickedId.split('');
+        const clickedPage = clickedPageArray.slice(2, clickedPageArray.length).join('');
+        console.log(clickedPage);
+        page = clickedPage;
+        getData(lastSearchQuery, page);
     }
 }
 
 renderAdCarousel(films);
 
 form.addEventListener('submit', handleSubmit);
+buttons.addEventListener('click', handleClick);

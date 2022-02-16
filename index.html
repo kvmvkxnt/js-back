@@ -27,6 +27,7 @@
                             <option value="movie">Movie</option>
                             <option value="series">Series</option>
                             <option value="episode">Episode</option>
+                            <option value="game">Game</option>
                         </select>
                     </div>
                     <div class="col-12 mb-2 col-lg-12">
@@ -37,9 +38,13 @@
         </form>
 
         <div class="search__results mb-3">
-            <div class="container">
-                <div class="results__inner row row-cols-1 row-cols-lg-2">
+            <div class="container d-flex flex-column align-items-center">
+                <div class="results__inner row row-cols-auto g-md-4 row-cols-1 row-cols-lg-2 align-items-center mb-5">
                     
+                </div>
+
+                <div class="search__buttons btn-group flex-wrap">
+
                 </div>
             </div>
         </div>
@@ -78,8 +83,8 @@
     </template>
 
     <template class="found-item-card-template">
-        <div class="search__item col-12">
-            <div class="card mb-3">
+        <div class="search__item col-12 mb-3">
+            <div class="card">
                 <div class="row g-0 row-cols-sm-2">
                     <div class="col-12 col-sm-4 d-flex flex-column align-items-center">
                         <img class="search__img img-fluid rounded" alt="test">
@@ -87,10 +92,7 @@
                     <div class="col-12 col-sm-8">
                         <div class="card-body">
                             <h5 class="search__title card-title"></h5>
-                            <p class="search__overview card-text"></p>
-                            <p class="search__score card-text text-muted text-warning"></p>
                             <p class="search__type card-text text-muted"></p>
-                            <p class="search__genres card-text text-muted"></p>
                         </div>
                     </div>
                 </div>
