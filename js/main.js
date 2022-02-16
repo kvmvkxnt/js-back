@@ -61,8 +61,6 @@ const renderFilms = (db) => {
         findElement('.info__button', filmCard).dataset.imdbId = elem.imdbID;
         findElement('.card-info', filmCard).dataset.imdbId = elem.imdbID;
 
-        console.log(elem.imdbId);
-
         filmsFragment.appendChild(filmCard);
     });
 
@@ -77,13 +75,24 @@ async function getFilmData(id, node) {
     const response = await fetch(API+API_KEY+'&i='+id);
 
     const data = await response.json();
-    console.log(data);
 
     if (data.Response == 'True') {
         const genres = data.Genre;
         const score = data.imdbRating;
         const overview = data.Plot;
-        const info = [genres, score, overview];
+        let date;
+
+        if (data.Released == 'N/A') {
+            if (data.Year == 'N/A') {
+                date = 'N/A';
+            } else {
+                date = data.Year;
+            }
+        } else {
+            date = data.Released;
+        }
+
+        const info = [genres, score, overview, date];
 
         renderInfo(info, node);
     } else {
@@ -125,11 +134,8 @@ async function getData(searchQuery = '&s=Spider-Man', page) {
         data = await response.json();
     }
 
-    console.log(data);
-
     if (data.Response == 'True') {
         renderFilms(data.Search);
-        console.log(page);
         renderButtons(data.totalResults, page);
         if (page <= 1) {
             if (!findElement('#prev_btn')) {
@@ -245,7 +251,6 @@ const handleClick = (evt) => {
         const clickedId = clicked.id;
         const clickedPageArray = clickedId.split('');
         const clickedPage = clickedPageArray.slice(2, clickedPageArray.length).join('');
-        console.log(clickedPage);
         page = clickedPage;
         getData(lastSearchQuery, page);
     }
@@ -272,6 +277,15 @@ const renderInfo = (info, node) => {
         rating.textContent = 'Rating: ' + info[1];
     }
 
+    const release = document.createElement('time');
+    release.className = 'card-text h5';
+
+    if (info[3] == 'N/A') {
+        release.textContent = 'Release: not available yet';
+    } else {
+        release.textContent = 'Release: ' + info[3];
+    }
+
     const genres = document.createElement('p');
     genres.className = 'card-text h4';
 
@@ -284,6 +298,7 @@ const renderInfo = (info, node) => {
     const fragment = document.createDocumentFragment();
     fragment.appendChild(overview);
     fragment.appendChild(rating);
+    fragment.appendChild(release);
     fragment.appendChild(genres);
 
     node.appendChild(fragment);
