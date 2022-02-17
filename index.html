@@ -49,23 +49,32 @@
             </div>
         </div>
 
-        <div class="ad__films">
+        <div class="ad__films bookmarked__films">
             <div class="container">
-                <div class="ad__inner">
-                    <div id="adCarousel" class="ad__carousel carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
+                <div class="container__inner row">
+                    <div class="bookmarked__inner col-12 col-md-4 col-xl-6">
+                        <h3 class="h1 text-center">Bookmarked</h3>
+                        <div class="bookmarked__row row">
                             
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#adCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+                    </div>
+
+                    <div class="ad__inner col-12 col-md-8 col-xl-6">
+                        <div id="adCarousel" class="ad__carousel carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#adCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,6 +83,19 @@
 
 
     <!-- Templates-->
+    <template class="bookmark-item-template">
+        <div class="bookmarked__item col-12 col-sm-6 col-md-12 col-xl-6 mb-2">
+            <div class="card p-2">
+                <h3 class="card-title">
+                    Lorem.
+                </h3>
+                <div class="align-self-end">
+                    <button class="bookmark__remove btn btn-danger">Remove</button>
+                    <a href="#" class="bookmark__info btn btn-primary">Info</a>
+                </div>
+            </div>
+        </div>
+    </template>
 
     <template class="ad-carousel-item-template">
         <div class="carousel-item" data-bs-interval="2000">
@@ -96,6 +118,7 @@
                         <div class="card-body">
                             <h5 class="search__title card-title"></h5>
                             <p class="search__type card-text text-muted"></p>
+                            <button class="search__bookmark btn btn-outline-primary mb-2">Bookmark</button>
                             <button class="info__button btn btn-outline-info mb-2">More info</button>
                             <div class="card-info">
 

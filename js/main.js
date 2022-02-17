@@ -9,6 +9,9 @@ const yearValue = findElement('#search_year');
 const typeValue = findElement('#search_type');
 const filmsList = findElement('.results__inner');
 const buttons = findElement('.search__buttons');
+const bookmarkedAndAd = findElement('.container__inner');
+const bookmarkedItemTemplate = findElement('.bookmark-item-template').content;
+let bookmarked = [];
 let lastSearchQuery;
 let page = 1;
 
@@ -60,6 +63,7 @@ const renderFilms = (db) => {
         findElement('.search__type', filmCard).textContent = 'Type: ' + elem.Type.toUpperCase();
         findElement('.info__button', filmCard).dataset.imdbId = elem.imdbID;
         findElement('.card-info', filmCard).dataset.imdbId = elem.imdbID;
+        findElement('.search__bookmark', filmCard).dataset.imdbId = elem.imdbID;
 
         filmsFragment.appendChild(filmCard);
     });
@@ -304,12 +308,62 @@ const renderInfo = (info, node) => {
     node.appendChild(fragment);
 }
 
+const addToBookmarked = (id, title) => {
+    const newBookmarked = {
+        imdbId: id,
+        title: title,
+    }
+
+    bookmarked.push(newBookmarked);
+}
+
+const rednerBookmarked = (db) => {
+    const bookmarkeds = findElement('.bookmarked__row');
+    bookmarkeds.innerHTML = null;
+    const newFragmet = document.createDocumentFragment();
+
+    db.forEach((elem) => {
+        const newBookmarked = bookmarkedItemTemplate.cloneNode(true);
+        const title = findElement('.card-title', newBookmarked);
+
+        title.parentNode.parentNode.dataset.imdbId = elem.imdbId;
+        title.textContent = elem.title;
+        findElement('.bookmark__remove', newBookmarked).dataset.imdbId = elem.imdbId;
+        findElement('.bookmark__info', newBookmarked).dataset.imdbId = elem.imdbId;
+
+        newFragmet.appendChild(newBookmarked);
+    });
+
+    bookmarkeds.appendChild(newFragmet);
+}
+
+const checkBookmarked = () => {
+    if (bookmarked != []) {
+        findElement('.bookmarked__inner').className = 'bookmarked__inner col-12 col-md-4 col-xl-6';
+        findElement('.ad__inner').className = 'ad__inner col-12 col-md-8 col-xl-6';
+        const newTitle = document.createElement('h3');
+        newTitle.className = 'h1 text-center';
+        newTitle.textContent = 'Bookmarked';
+
+        const newRow = document.createElement('div');
+        newRow.className = 'bookmarked__row row';
+        const bookmarkeds = findElement('.bookmarked__row');
+        bookmarkeds.addEventListener('click', handleBookmark);
+    } else {
+        findElement('.bookmarked__inner').className = 'bookmarked__inner';
+        findElement('.bookmarked__inner').innerHTML = null;
+        findElement('.ad__inner').className = 'ad__inner col-12';
+        const adCarousel = findElement('.ad__carousel');
+        adCarousel.style.maxWidth = '970px';
+        findElement('img', adCarousel).style.maxHeight = '600px';
+    }
+}
+
 const handleInfo = evt => {
     const clicked = evt.target;
     if (clicked.matches('.info__button')) {
         const filmId = clicked.dataset.imdbId;
         const filmInfo = clicked.nextElementSibling;
-        // getFilmData(filmId, filmInfo);
 
         if (filmInfo.dataset.used != 'true') {
             getFilmData(filmId, filmInfo);
@@ -317,10 +371,34 @@ const handleInfo = evt => {
             filmInfo.innerHTML = null;
             filmInfo.removeAttribute('data-used');
         }
+    } else if (clicked.matches('.search__bookmark')) {
+        const filmId = clicked.dataset.imdbId;
+        const title = findElement('.search__title', clicked.parentNode).textContent
+        const foundInBookmarked = bookmarked.find((elem) => elem.imdbId == filmId);
+
+        if (!foundInBookmarked) {
+            addToBookmarked(filmId, title);
+            rednerBookmarked(bookmarked);
+        } else {
+            alert('Already in bookmarked!');
+            return;
+        }
+    }
+}
+
+const handleBookmark = evt => {
+    const clicked = evt.target;
+
+    if (clicked.matches('.bookmark__remove')) {
+        const bookmarkIndex = bookmarked.findIndex((elem) => elem.imdbId == clicked.dataset.imdbId);
+        bookmarked.splice(bookmarkIndex, 1);
+        rednerBookmarked(bookmarked);
     }
 }
 
 renderAdCarousel(films);
+checkBookmarked();
+console.log(bookmarked);
 
 form.addEventListener('submit', handleSubmit);
 buttons.addEventListener('click', handleClick);
