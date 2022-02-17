@@ -137,7 +137,7 @@ async function getData(searchQuery = '&s=Spider-Man', page) {
     if (data.Response == 'True') {
         renderFilms(data.Search);
         renderButtons(data.totalResults, page);
-        if (page <= 1) {
+        if (page == 1) {
             if (!findElement('#prev_btn')) {
                 return;
             } else {
@@ -147,7 +147,7 @@ async function getData(searchQuery = '&s=Spider-Man', page) {
             if (!findElement('#prev_btn')) {
                 return;
             } else {
-                findElement('#prev_btn').disabled = true;
+                findElement('#prev_btn').disabled = false;
             }
         }
 
